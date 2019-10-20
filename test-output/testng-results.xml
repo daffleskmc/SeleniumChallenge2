@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default suite" duration-ms="15900" started-at="2019-10-20T06:10:02Z" finished-at="2019-10-20T06:10:18Z">
+    <groups>
+    </groups>
+    <test name="Default test" duration-ms="15900" started-at="2019-10-20T06:10:02Z" finished-at="2019-10-20T06:10:18Z">
+      <class name="com.trip.tests.TripMainPageTest">
+        <test-method status="PASS" signature="setup()[pri:0, instance:com.trip.tests.TripMainPageTest@1b0375b3]" name="setup" is-config="true" duration-ms="14533" started-at="2019-10-20T17:10:02Z" finished-at="2019-10-20T17:10:17Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method status="PASS" signature="searchFlightTest()[pri:0, instance:com.trip.tests.TripMainPageTest@1b0375b3]" name="searchFlightTest" duration-ms="1347" started-at="2019-10-20T17:10:17Z" finished-at="2019-10-20T17:10:18Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- searchFlightTest -->
+        <test-method status="PASS" signature="tearDown()[pri:0, instance:com.trip.tests.TripMainPageTest@1b0375b3]" name="tearDown" is-config="true" duration-ms="1" started-at="2019-10-20T17:10:18Z" finished-at="2019-10-20T17:10:18Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- com.trip.tests.TripMainPageTest -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
