@@ -2,6 +2,7 @@ package com.trip.tests;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +19,7 @@ import com.trip.util.TripUtil;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class TripMainTest {
+public class TripOnePageTest {
 
 	static WebDriver driver;
 
@@ -41,23 +42,20 @@ public class TripMainTest {
 		WebDriverWait wait = new WebDriverWait(driver, 40);
 		wait.until(ExpectedConditions.visibilityOf(flight));
 
-		// flight.click();
-		//
-		// // from combobox
-		// driver.findElement(By.xpath("//label[@for='fromCity']")).click();
-		//
-		// selectFromCombobox(driver, "DEL");
-		//
-		// // to combobox
-		// // driver.findElement(By.xpath("//label[@for='toCity']")).click();
-		//
-		// selectFromCombobox(driver, "BLR");
+		flight.click();
 
-		// select dates 1
-		// selectDatesFromQL(driver);
+		// from combobox
+		driver.findElement(By.xpath("//label[@for='fromCity']")).click();
 
-		// select date 2
-		driver.findElement(By.xpath("//label[@for='departure']")).click();
+		selectFromCombobox(driver, "DEL");
+
+		// to combobox
+		// driver.findElement(By.xpath("//label[@for='toCity']")).click();
+
+		selectFromCombobox(driver, "BLR");
+
+		// select date
+		// driver.findElement(By.xpath("//label[@for='departure']")).click();
 		selectDatesDC(driver);
 
 	}
@@ -87,7 +85,8 @@ public class TripMainTest {
 		// 1. get current date
 		DateFormat df = new SimpleDateFormat("dd MMMM yyyy");
 		Date date = new Date();
-		System.out.println("current date: " + df.format(date));
+		String currentDate = formatDate(date);
+		System.out.println("departure date: " + currentDate);
 
 		// 2. separate day, month and year
 		String dateStr = df.format(date);
@@ -97,23 +96,37 @@ public class TripMainTest {
 		String year = splitDateStr[2];
 		String monthYear = month + " " + year;
 
-		// 3. get months displayed; 2 are displayed at a time; e.g. October and November
+		// 3. add certain number of days
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, 7);
+		Date returnDate = cal.getTime();
+		System.out.println("return date: " + formatDate(returnDate));
+
+		// 4. get months displayed; 2 are displayed at a time; e.g. October and November
 		WebElement elementMonths = driver.findElement(By.xpath("//div[@class='DayPicker-Months']"));
 		List<WebElement> listMonths = elementMonths.findElements(By.xpath("//div[@class='DayPicker-Month']"));
-		System.out.println("listMonths size: " + listMonths.size());
+		// System.out.println("listMonths size: " + listMonths.size());
 
-		// 4. check if the displayed month is equal to string var month
-
+		// 5. check if the displayed month is equal to string var 'month' + 'year'
 		String monthYearDisplayed = driver.findElement(By.xpath("//div[@class='DayPicker-Caption']//div")).getText();
-		System.out.println("monthDisplayed: " + monthYearDisplayed);
+		// System.out.println("monthYearDisplayed: " + monthYearDisplayed);
 
-		// 4.1 if displayed, select a day (not: this is always displayed)
+		// 5.1 if displayed, select a day (note: days are always displayed)
+		String beforeXpathDay = "//div[@aria-label='";
+		String afterXpathDay = "' and aria-disabled='true']";
+
 		if (monthYear.equalsIgnoreCase(monthYearDisplayed)) {
+			// System.out.println("date to click: " + beforeXpathDay + sMyDate +
+			// afterXpathDay);
+			driver.findElement(By.xpath(beforeXpathDay + currentDate + afterXpathDay)).click();
+			driver.findElement(By.xpath(beforeXpathDay + returnDate + afterXpathDay)).click();
 
 		}
 
-		// 4.2 if not displayed, click the next calendar window
+		// 5.2 if not displayed, click the next calendar window - do this next time
 		else {
+			System.out.println("im here at else ----- ");
 			WebElement navBtnNext = driver
 					.findElement(By.xpath("//span[@class='DayPicker-NavButton DayPicker-NavButton--next']"));
 			if (navBtnNext.isDisplayed()) {
@@ -121,6 +134,9 @@ public class TripMainTest {
 				navBtnNext.click();
 			}
 		}
+
+		// 6. click search button
+		driver.findElement(By.xpath("//a[@class='primaryBtn font24 latoBlack widgetSearchBtn ']")).click();
 	}
 
 	public static void selectDatesFromQL(WebDriver driver) {
@@ -225,5 +241,12 @@ public class TripMainTest {
 				.click();
 		selectDateFromQL(monthyear, Selectday);
 
+	}
+
+	public static String formatDate(Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", java.util.Locale.ENGLISH);
+		sdf.applyPattern("EEE MMM dd yyyy");
+		String sMyDate = sdf.format(date);
+		return sMyDate;
 	}
 }
