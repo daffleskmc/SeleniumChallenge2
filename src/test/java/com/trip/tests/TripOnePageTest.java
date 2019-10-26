@@ -34,7 +34,7 @@ public class TripOnePageTest {
 		driver.manage().timeouts().implicitlyWait(TripUtil.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		driver.get("https://www.makemytrip.com/");
 
-		// flight icon
+		// 1. click flight icon
 		WebElement flight = driver.findElement(By.xpath("//a[@href='//www.makemytrip.com/flights/']"));
 		// Actions action = new Actions(driver);
 		// action.moveToElement(flight).click().perform();
@@ -44,7 +44,10 @@ public class TripOnePageTest {
 
 		flight.click();
 
-		// from combobox
+		// 2. click roundtrip
+		driver.findElement(By.xpath("//li[@data-cy='roundTrip']")).click();
+
+		// 3. select from combobox
 		driver.findElement(By.xpath("//label[@for='fromCity']")).click();
 
 		selectFromCombobox(driver, "DEL");
@@ -52,12 +55,24 @@ public class TripOnePageTest {
 		// to combobox
 		// driver.findElement(By.xpath("//label[@for='toCity']")).click();
 
+		// 4. select to combobox
 		selectFromCombobox(driver, "BLR");
 
-		// select date
+		// 5. select date
 		// driver.findElement(By.xpath("//label[@for='departure']")).click();
 		selectDatesDC(driver);
 
+		// 5.1 see if non stop checkbox is clickable first
+		waitElementToBeClickable(driver, driver.findElement(By.xpath("//span[contains(text(), 'Non Stop')]")));
+
+		// 5.2 your now in result page, scroll to bottom
+		scrollToBottomOfPage(driver);
+
+		// 6. print total number of departure flights
+		totalDepartureFlights(driver);
+
+		// 7. print total number of return flights
+		totalReturnFlights(driver);
 	}
 
 	public static void selectFromCombobox(WebDriver driver, String city) {
@@ -94,14 +109,15 @@ public class TripOnePageTest {
 		String day = splitDateStr[0];
 		String month = splitDateStr[1];
 		String year = splitDateStr[2];
-		String monthYear = month + " " + year;
+		String monthYear = month + year;
 
 		// 3. add certain number of days
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.add(Calendar.DATE, 7);
-		Date returnDate = cal.getTime();
-		System.out.println("return date: " + formatDate(returnDate));
+		Date dateR = cal.getTime();
+		String returnDate = formatDate(dateR);
+		System.out.println("return date: " + returnDate);
 
 		// 4. get months displayed; 2 are displayed at a time; e.g. October and November
 		WebElement elementMonths = driver.findElement(By.xpath("//div[@class='DayPicker-Months']"));
@@ -110,15 +126,15 @@ public class TripOnePageTest {
 
 		// 5. check if the displayed month is equal to string var 'month' + 'year'
 		String monthYearDisplayed = driver.findElement(By.xpath("//div[@class='DayPicker-Caption']//div")).getText();
-		// System.out.println("monthYearDisplayed: " + monthYearDisplayed);
+		System.out.println("monthYear: " + monthYear + " and monthYearDisplayed: " + monthYearDisplayed);
 
 		// 5.1 if displayed, select a day (note: days are always displayed)
 		String beforeXpathDay = "//div[@aria-label='";
-		String afterXpathDay = "' and aria-disabled='true']";
+		String afterXpathDay = "' and @aria-disabled='false']";
 
 		if (monthYear.equalsIgnoreCase(monthYearDisplayed)) {
-			// System.out.println("date to click: " + beforeXpathDay + sMyDate +
-			// afterXpathDay);
+			System.out.println("date to click: " + beforeXpathDay + currentDate + afterXpathDay);
+			System.out.println("date to click: " + beforeXpathDay + returnDate + afterXpathDay);
 			driver.findElement(By.xpath(beforeXpathDay + currentDate + afterXpathDay)).click();
 			driver.findElement(By.xpath(beforeXpathDay + returnDate + afterXpathDay)).click();
 
@@ -248,5 +264,77 @@ public class TripOnePageTest {
 		sdf.applyPattern("EEE MMM dd yyyy");
 		String sMyDate = sdf.format(date);
 		return sMyDate;
+	}
+
+	public static String totalDepartureFlights(WebDriver driver) {
+
+		WebElement element = driver.findElement(By.xpath("//div[@id='ow-domrt-jrny']/div[2]"));
+		List<WebElement> departureList = element
+				.findElements(By.xpath("//div[@id='ow-domrt-jrny']/div[2]/div[@class='fli-list splitVw-listing ']"));
+		departureList.add(driver.findElement(
+				By.xpath("//div[@id='ow-domrt-jrny']/div[2]/div[@class='fli-list splitVw-listing active']")));
+		// List<WebElement> departureList = element
+		// .findElements(By.xpath("//div[@class='splitVw-sctn
+		// pull-left']/child::div[2]/child::div"));
+
+		waitForPageLoad(driver, departureList);
+
+		System.out.println("departureList: " + departureList.size());
+
+		return "departureList: " + departureList.size();
+	}
+
+	public static String totalReturnFlights(WebDriver driver) {
+		WebElement element = driver.findElement(By.xpath("//div[@id='rt-domrt-jrny']/div[2]"));
+		List<WebElement> returnList = element
+				.findElements(By.xpath("//div[@id='rt-domrt-jrny']/div[2]/div[@class='fli-list splitVw-listing ']"));
+		returnList.add(driver.findElement(
+				By.xpath("//div[@id='rt-domrt-jrny']/div[2]/div[@class='fli-list splitVw-listing active']")));
+		// List<WebElement> departureList = element
+		// .findElements(By.xpath("//div[@class='splitVw-sctn
+		// pull-left']/child::div[2]/child::div"));
+
+		waitForPageLoad(driver, returnList);
+
+		System.out.println("returnList: " + returnList.size());
+		return "returnList: " + returnList.size();
+	}
+
+	public static void waitForPageLoad(WebDriver driver, List<WebElement> e) {
+		WebDriverWait wait = new WebDriverWait(driver, 40);
+		wait.until(ExpectedConditions.visibilityOfAllElements(e));
+	}
+
+	public static void scrollToBottomOfPage(WebDriver driver) {
+		// try 1
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
+		// try 2
+		// Actions actions = new Actions(driver);
+		// actions.keyDown(Keys.CONTROL).sendKeys(Keys.END).perform();
+
+		// try 3
+		// ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,400)", "");
+
+		// try 4 - slow scroll
+		// for (int second = 0;; second++) {
+		// if (second >= 60) {
+		// break;
+		// }
+		// ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,400)", ""); //
+		// y value '400' can be altered
+		// try {
+		// Thread.sleep(3000);
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// }
+	}
+
+	public static void waitElementToBeClickable(WebDriver driver, WebElement element) {
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		wait.until(ExpectedConditions.elementToBeClickable(element));
 	}
 }
