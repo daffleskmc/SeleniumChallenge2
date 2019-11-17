@@ -12,8 +12,12 @@ https://drive.google.com/file/d/1YOP7...
 4) Select departure date (today’s date) and return date: after 7 days 
 5) Click on Search
 6) Print total number of records of “Departure Flight” and “Return Flight” on the console
-7) Select Non-Stop and 1 Stop filter options and print total number of records of “Departure Flight” and “Return Flight” on the console
-8) Select radio button of top 10 options of “Departure Flight” and “Return Flight”
+7) Select Non-Stop and print total number of records of “Departure Flight” and “Return Flight” on the console
+Then unselect.
+7.1) Select Non-Stop and 1 Stop filter options and print total number of records of “Departure Flight” and “Return Flight” on the console
+Then unselect
+8) Select departure 2nd radio button 
+8.1) Select return 3rd radio button
 9) Verify the same Departure Flight price and Return Flight price are getting reflected at bottom of the page
 10) Verify the correct total amount (Departure Flight price + Return Flight price) is getting reflected correctly
 

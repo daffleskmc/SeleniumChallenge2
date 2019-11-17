@@ -21,10 +21,12 @@ public class TripMainPageTest extends TripBase {
 		main = new TripMainPage();
 	}
 
-	@Test
+	@Test(priority = 1)
 	public void searchFlightTest() {
 		// main.searchFlight("Delhi", "Bangalore");
 		main.selectCities("DEL", "BLR");
+		main.selectDates(7);
+		main.clickSearch();
 	}
 
 	@AfterMethod

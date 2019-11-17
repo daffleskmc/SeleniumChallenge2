@@ -1,17 +1,19 @@
 package com.trip.pages;
 
-import java.util.List;
-
+import com.trip.base.TripBase;
+import com.trip.util.TripUtil;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.trip.base.TripBase;
+import java.util.Date;
+import java.util.List;
 
 public class TripMainPage extends TripBase {
 
-	@FindBy(xpath = "//a[@href='//www.makemytrip.com/flights/']")
+	//@FindBy(xpath = "//a[@href='https://www.undefined/flights/']")
+	@FindBy(xpath = "//a[@href='https://www.makemytrip.com/flights/']")
 	WebElement flights;
 
 	@FindBy(xpath = "//li[@data-cy='roundTrip']")
@@ -32,21 +34,29 @@ public class TripMainPage extends TripBase {
 	@FindBy(xpath = "//label[@for='toCity']")
 	WebElement toLabel;
 
+	@FindBy(xpath = "//a[@class='primaryBtn font24 latoBlack widgetSearchBtn ']")
+	WebElement searchBtn;
+
 	public TripMainPage() {
 		PageFactory.initElements(driver, this);
 	}
 
 	public void selectCities(String fromWhere, String toWhere) {
+		TripUtil.waitForElementToBeVisible(driver, flights);
+
+		// 1. click flights
 		flights.click();
+
+		// 2. click roundtrip
 		roundTrip.click();
 
-		// 1. select from city
+		// 3. select from city combobox
 		fromLabel.click();
 
-		// 2. select from city combobox
+		// 4. select from city combobox
 		selectCityFromComboBox(fromWhere);
 
-		// 3. select to city combobox
+		// 5. select to city combobox
 		selectCityFromComboBox(toWhere);
 
 	}
@@ -64,7 +74,25 @@ public class TripMainPage extends TripBase {
 		}
 	}
 
-	public void selectDates(String dateDeparture, String dateReturn) {
+	public void selectDates(int howManyDays) {
+		// 1. get today's date
+		Date date = new Date();
+		String currentDate = TripUtil.formatDate(date);
 
+		// 2. add number of days to today's date
+		String returnDate = TripUtil.addDays(date, howManyDays);
+
+		String beforeXpathDay = "//div[@aria-label='";
+		String afterXpathDay = "' and @aria-disabled='false']";
+
+		driver.findElement(By.xpath(beforeXpathDay + currentDate + afterXpathDay)).click();
+		driver.findElement(By.xpath(beforeXpathDay + returnDate + afterXpathDay)).click();
+	}
+
+	public TripSearchResultPage clickSearch() {
+		searchBtn.click();
+		driver.manage().deleteAllCookies();
+
+		return new TripSearchResultPage();
 	}
 }
