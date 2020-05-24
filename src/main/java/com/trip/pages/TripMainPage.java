@@ -34,7 +34,7 @@ public class TripMainPage extends TripBase {
 	@FindBy(xpath = "//label[@for='toCity']")
 	WebElement toLabel;
 
-	@FindBy(xpath = "//a[@class='primaryBtn font24 latoBlack widgetSearchBtn ']")
+	@FindBy(xpath = "//a[@class='primaryBtn font24 latoBold widgetSearchBtn ']")
 	WebElement searchBtn;
 
 	public TripMainPage() {

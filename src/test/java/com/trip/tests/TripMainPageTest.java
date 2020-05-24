@@ -31,7 +31,7 @@ public class TripMainPageTest extends TripBase {
 
 	@AfterMethod
 	public void tearDown() {
-
+		driver.quit();
 	}
 
 }

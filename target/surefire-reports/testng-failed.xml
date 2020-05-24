@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite verbose="0" name="Failed suite [Command line suite]">
+  <test name="Command line test(failed)">
+    <classes>
+      <class name="com.trip.tests.TripMainPageTest">
+        <methods>
+          <include name="searchFlightTest"/>
+          <include name="setup"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- com.trip.tests.TripMainPageTest -->
+      <class name="com.trip.tests.TripSearchResultPageTest">
+        <methods>
+          <include name="validateNoOfFlightsWithoutFilters"/>
+          <include name="validateNoOfNonStopFlights"/>
+          <include name="validateNoOfOneStopFlights"/>
+          <include name="setup"/>
+          <include name="validatePrice"/>
+        </methods>
+      </class> <!-- com.trip.tests.TripSearchResultPageTest -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [Command line suite] -->

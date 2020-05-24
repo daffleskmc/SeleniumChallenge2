@@ -1,0 +1,4 @@
+com\trip\base\TripBase.class
+com\trip\pages\TripMainPage.class
+com\trip\pages\TripSearchResultPage.class
+com\trip\util\TripUtil.class
