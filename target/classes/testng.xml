@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Selenium Challenge 2 - Flight Scanner">
+
+<listeners>
+	<listener class-name="com.trip.reports.ExtentReportListener"/>
+</listeners>
+
+	<test name="Selenium Challenge 2 - Flight Scanner Test Cases">
+		 <classes>
+		 	<class name="com.trip.tests.TripMainPageTest"></class>
+		 </classes>
+	</test>
+</suite>
